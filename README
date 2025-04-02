@@ -1,0 +1,22 @@
+To run, follow preprocess_notebook.ipynb to preprocess images for IDL, then after tracking with IDL, use trk_preprocess to perform quality control and preprocess the tracks, then use fcsApp to extract HMM, autocorrelation, and cross correlation data.
+To change file type, designate your own reader or use one of the existing readers in ht2.readers.py. Currently only accepts TCYX files, will implement a reader/pipeline that incorporates multiple fields of view and performs maximum Z projection. 
+
+If you are having problems with the tracking, such as spots not beginning on the first frame or localize hanging on specific frames with bright spots, use prepend_im notebook to replace the first frame with a better frame using the frame index given by localize.
+
+# TODO: replace localizeApp, replace btrack, replace fcsApp with native python 
+
+Authors:
+Ike Zhang, NIDDK
+
+Acknowledgements:
+Dr. Yekaterina Miroshnikova, NIDDK
+Dr. Dan Larson, NCI
+Dr. Carson Chow, NIDDK
+Dr. Nadezda Fursova, NCI
+Dr. Adib Keikhosravi, NCI
+Dr. Gianluca Pegoraro, NCI
+Dr. Christopher Bohrer, NCI
+
+
+References:
+Keikhosravi, Adib, Almansour, Faisal, Bohrer, Christopher H., Fursova, Nadezda A., Guin, Krishnendu, Sood, Varun, Misteli, Tom, Larson, Daniel R., & Pegoraro, Gianluca. (2024). High-throughput image processing software for the study of nuclear architecture and gene expression. Scientific Reports, 14(1), 18426. https://www.nature.com/articles/s41598-024-66600-1#Abs1
