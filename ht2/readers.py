@@ -2,6 +2,7 @@ from ht2.io_handler import check_f
 from imaris_ims_file_reader.ims import ims
 import zarr
 import tifffile as tif
+import czifile as czi
 import numpy as np
 import nd2
 
@@ -25,6 +26,14 @@ def nd2_TCYX(fpath):
 
 # TODO CZI reader
 
+def czi_TCYX(fpath):
+    return czi.imread(fpath)
+
+
+    # Check fpath real
+    # Check file and get correct reader
+    # Read metadata
+    # Check image shape and coerce into TCYX
 # def batch_read_sc(f_list, template="{cell}_{name}_{im_type}.{ext}"):
 #     im_list = []
 #     meta_list = []
@@ -40,6 +49,7 @@ def nd2_TCYX(fpath):
 #     return im_list, meta_list
 
 if __name__=="__main__":
-    # x = ims_read()
-    x = nd2_TCYX(r"\\shares2.dkisilon2.niddk.nih.gov\DKMIROSHNIKOVALAB\Lab Notebooks\Ike\005\006_FN_0_Stretch_crop.nd2")
-    print(x.shape)
+    pass
+    # # x = ims_read()
+    # x = nd2_TCYX(r"\\shares2.dkisilon2.niddk.nih.gov\DKMIROSHNIKOVALAB\Lab Notebooks\Ike\005\006_FN_0_Stretch_crop.nd2")
+    # print(x.shape)

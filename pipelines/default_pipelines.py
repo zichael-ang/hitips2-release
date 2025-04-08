@@ -1,6 +1,7 @@
 from tqdm import tqdm
 from pathlib import Path
 import pickle
+import sys
 
 import numpy as np
 import tifffile as tif
@@ -13,8 +14,18 @@ from ht2.quant import *
 
 import cellpose.models
 
+int64_max = 2**64
+
 def DENOISE_MIN_PROJ_TCYX(im):
     return deterministic_denoise(im, t_axis=0)
+
+class CROP_TIME:
+    def __init__(self, t1:int=0, t2:int=int64_max):
+        self.t1 = t1
+        self.t2 = t2
+    
+    def __call__(self, im):
+        return im[max(self.t1, 0):min(self.t2, im.shape[0]), ...]
 
 def batch_write(im_list, out_path, keyword, metadata={}, bigtiff=True):
     for i, im in enumerate(im_list):

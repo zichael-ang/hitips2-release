@@ -54,7 +54,6 @@ def write_params(out_path, p_dict):
         out_f.write(obj)
     return True
 
-
 def metadata_extract(metadata):
     dim_ord = metadata["DimOrder"]
     px_size = [metadata["PhysicalSizeX"], metadata["PhysicalSizeY"]]
@@ -108,3 +107,43 @@ def fwf_writer(fname, df):
         else:
             for data in df:
                 f.write("".join(["{:>11.3f}    ".format(num) for num in data])+"\n")
+
+
+
+compression_dict = {
+    "zip": None,
+    "gz": None,
+    "bz2": None,
+    "xz": None,
+}
+
+file_reader = {
+    "ome": None,
+    "tif": None,
+    "tiff": None,
+    "czi": None,
+    "ims": None,
+    "nd2": None
+}
+
+def get_file_type(fpath):
+    fpath = Path(fpath)
+    name = fpath.name.split(".")
+    name.pop(0)
+    decompression = None
+    # Check Compression
+    if name[-1] == "zip":
+        compressed = "zipped"
+
+    # ome tif
+    # ims
+    # nd2
+    # tif
+    # czi
+
+
+
+
+
+def infer_image_handler(fpath, decompression):
+    pass

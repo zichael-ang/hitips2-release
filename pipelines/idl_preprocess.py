@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # import ht2.segment as seg
 from ht2.utils import *
 from ht2.io_handler import *
-from ht2.readers import ometiff_TCYX
+from ht2.readers import *
 
 from pipelines.default_pipelines import *
 
@@ -25,7 +25,7 @@ class IDL_PREPROCESS:
             reader = ometiff_TCYX
         self.reader = reader
         if preprocess is None:
-            preprocess = DENOISE_MIN_PROJ_TCYX
+            preprocess = Compose()
         self.preprocess = preprocess
         if segment is None:
             segment = CELLPOSE_SEGMENT()
@@ -44,6 +44,9 @@ class IDL_PREPROCESS:
     def load_image(self, fname):
         self.cached_image = self.reader(fname)
         return self.cached_image
+
+    def set_reader(self, reader):
+        self.reader = reader
 
     def run(self, fname, out_path):
         check_dir(out_path, create_if_not=True)
@@ -80,6 +83,19 @@ class IDL_PREPROCESS:
                 plt.imshow(im[t, 0, ...] + im[t, 1, ...])
                 plt.title("Image, t={}, d={}".format(t, d))
                 plt.show()
+
+class Compose:
+    def __init__(self, functions:list=[]):
+        self.functions = functions
+
+    def append(self, function):
+        self.functions.append(function)
+
+    def __call__(self, im):
+        output = im.copy()
+        for func in self.functions:
+            output = func(output)
+        return output
 
 # class IDLPRE:
 #     params = {
