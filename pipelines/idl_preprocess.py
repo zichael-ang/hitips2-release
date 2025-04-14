@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 # import ht2.segment as seg
 from ht2.utils import *
 from ht2.io_handler import *
-from ht2.readers import *
 
 from pipelines.default_pipelines import *
 

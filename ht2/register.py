@@ -114,6 +114,19 @@ def phase_corr_batch(sc_imgs, sc_masks, fixed_t=0, channels=[0], order=1, n_jobs
     return reg_sc_imgs, reg_sc_masks, rotations
 
 
+def register_ch_t(img_tcyx:np.ndarray): # Needs testing
+    new_img = img_tcyx.copy()
+    fixed = img_tcyx[0, 0, ...] # Not super robust, but assumes camera-camera offset is constant
+    moving = img_tcyx[0, 1, ...]
+    shifts, _, _ = reg.phase_cross_correlation(fixed, moving)
+    aff_arr = np.eye(3)
+    
+    aff_arr[0, -1], aff_arr[1, -1] = shifts[0], shifts[1]
+    for i in range(img_tcyx.shape[0]):
+        new_img[i, 1, ...] = transform.warp(img_tcyx[i, 1, ...], aff_arr, order=1)
+    return new_img
+
+
 # def apply_tform_stack(img: np.ndarray, tform_stack: np.ndarray, order=1):
 #     """
 #     Applies a list of transforms on an stack of images: 

@@ -4,6 +4,7 @@ import parse
 from pathlib import Path
 import json
 import pandas as pd
+from typing import Union
 """
 read ome tiffs, parse params, write images
 
@@ -54,11 +55,6 @@ def write_params(out_path, p_dict):
         out_f.write(obj)
     return True
 
-def metadata_extract(metadata):
-    dim_ord = metadata["DimOrder"]
-    px_size = [metadata["PhysicalSizeX"], metadata["PhysicalSizeY"]]
-    return dim_ord, px_size
-
 def get_uuid(row):
     return "_".join([row["field"], row["cell"], row["ID"]])
 
@@ -72,7 +68,7 @@ def batch_read_tracks(f_list,
         if parsed_keys is None:
             raise NotImplementedError
         if parsed_keys["extension"] == "trk": # type: ignore
-            temp = pd.read_csv(fpath, sep="\t")
+            temp = pd.read_csv(fpath, sep="\\s+")
             temp.columns = ["x", "y", "I", "t", "state"]
         elif parsed_keys["extension"] == "csv": # type: ignore
             temp = pd.read_csv(fpath, usecols=[5, 6, 7, 8])
@@ -108,7 +104,11 @@ def fwf_writer(fname, df):
             for data in df:
                 f.write("".join(["{:>11.3f}    ".format(num) for num in data])+"\n")
 
+# def read_matched(search_dirs: list[Union[str, Path]]):
+    
+#     for search_dir in search_dirs:
 
+#     return g_im_list, r_im_list, g_trk_list, r_trk_list
 
 compression_dict = {
     "zip": None,
@@ -147,3 +147,34 @@ def get_file_type(fpath):
 
 def infer_image_handler(fpath, decompression):
     pass
+
+
+from imaris_ims_file_reader.ims import ims
+import zarr
+import tifffile as tif
+import czifile as czi
+import numpy as np
+import nd2
+
+def ims_read(fpath):
+    # Always reads in TCZYX
+    check_f(fpath)
+    a = ims(fpath, aszarr=True)
+    arr = zarr.open(a, mode='r')
+    arr = arr[:]
+    return arr
+
+def ometiff_TCYX(fpath):
+    img_tcyx = tif.imread(fpath)
+    if len(img_tcyx.shape) < 4:
+        img_tcyx = np.expand_dims(img_tcyx, 1)
+    return img_tcyx
+
+def nd2_TCYX(fpath):
+    img_btcyx = nd2.imread(fpath)
+    return img_btcyx
+
+# TODO CZI reader
+
+def czi_TCYX(fpath):
+    return czi.imread(fpath)
