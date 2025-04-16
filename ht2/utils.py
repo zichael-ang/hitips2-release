@@ -322,3 +322,16 @@ def sc_pb_corr_parallel(sc_imgs, channels=(0,), dt=100, dx=0.22, n_jobs=-1):
     args = list([(sc_img, ch_bool, dt, dx) for sc_img in sc_imgs])
     result = Parallel(n_jobs=n_jobs)(delayed(sc_pb_corr)(*arg) for arg in args)
     return list(result) 
+
+def robust_z_score(y):
+    med = np.median(y)
+    z = y - med
+    z = 0.6745 * z / np.median(z)
+    return z
+
+def sliding_window_correction(trace, window_size, func):
+    new_trace = np.zeros((len(trace)))
+    for i in range(np.ceil(len(trace) / window_size)):
+        new_trace[i*window_size:min(len(trace), (i+1) * window_size)] = func(trace[i*window_size:min(len(trace), (i+1) * window_size)])
+    return new_trace
+
