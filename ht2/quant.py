@@ -56,6 +56,14 @@ def spearman_cross_correlation(sig1, sig2, mode="same"):
     s_xcorr = pearson_cross_correlation(r_sig1, r_sig2, mode=mode)
     return s_xcorr
 
+def multi_tau(x1, x2, sum_step=4, double_sided=True):
+    min_len = min(x1.shape[0], x2.shape[0])
+    v = np.stack([x1[:min_len], x2[:min_len]])
+    t = np.arange(min_len)
+    forward = compG_multiTau(np.stack([x1[:min_len], x2[:min_len]]), t, n=sum_step)
+    backward = compG_multiTau(np.stack([x2[:min_len], x1[:min_len]]), t, n=sum_step)
+    # TODO: Finish using this to cheat calculate cross correlation forward and backwards
+
 def compG_multiTau(v, t, n=4, ctr=0):
     """v: data vector (channels=rows), t: time, n: bin every n steps.\n--> Matrix of G, time vector"""
     def compInd(v1,v2):
