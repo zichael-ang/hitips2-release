@@ -26,6 +26,23 @@ class CROP_TIME:
     
     def __call__(self, im):
         return im[max(self.t1, 0):min(self.t2, im.shape[0]), ...]
+    
+class DROP_OUTLIER:
+    def __init__(self, n_deviations):
+        self.n_deviations = n_deviations
+    def __call__(self, im):
+        t = np.arange(im.shape[0])
+        mean_I = np.mean(im, axis=(2, 3))
+        mean_mean_I = np.mean(mean_I, axis=0)
+        std_I = np.std(mean_I, axis=0)
+        plt.plot(t, mean_I[:, 0], t, mean_I[:, 1])
+        plt.axhline(mean_mean_I[0] - self.n_deviations * std_I[0])
+        plt.axhline(mean_mean_I[1] - self.n_deviations * std_I[1])
+        plt.show()
+        filter = t[(mean_I[:, 0] > (mean_mean_I[0] - std_I[0] * self.n_deviations)) * mean_I[:, 1] > (mean_mean_I[1] - std_I[1] * self.n_deviations)]
+        new_im = im[filter]
+        print(im.shape, new_im.shape)
+        return new_im
 
 def batch_write(im_list, out_path, keyword, metadata={}, bigtiff=True):
     for i, im in enumerate(im_list):

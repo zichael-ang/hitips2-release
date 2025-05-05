@@ -92,6 +92,8 @@ def get_lengths(arr: np.ndarray):
 
 def compute_burst_size(intensity, states, off_correction=True):
     on_label = label_states(states, 1)
+    off_label = label_states(states, 0)
+    
     # Identify unique time domains (ons and offs), for each time, compute length and integral of the time domain, then return list of burst sizes, their start times and lengths, and their corrected values
     pass
 
